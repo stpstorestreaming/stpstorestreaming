@@ -8,8 +8,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Play&display=swap" rel="stylesheet">
-
+  
   <style>
+    :root {
+      --background-color: #000;
+      --text-color: #fff;
+      --button-bg: #000;
+      --button-text: #4CAF50;
+      --input-border: #4CAF50;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --toast-bg: #4CAF50;
+      --toast-text: #fff;
+    }
+
     body {
       font-family: 'Play', sans-serif;
       margin: 0;
@@ -18,88 +29,53 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background: #000; /* Set background color to black */
-      color: #fff;
+      background: var(--background-color);
+      color: var(--text-color);
     }
 
-    #login-container,
-    #modal-container {
+    #login-container {
       text-align: center;
-      background-color: black;
+      background-color: var(--background-color);
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 10px var(--shadow-color);
       max-width: 400px;
-      width: 100%; /* Make the form occupy the entire width */
-      margin: 20px; /* Add some margin for better spacing */
-    }
-
-    #modal-container {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       width: 100%;
-      height: 100%;
-      background-color: black;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #modal-content {
-      text-align: center;
-      background-color: black;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      max-width: 400px;
-      width: 100%; /* Make the form occupy the entire width */
-      margin: 20px; /* Add some margin for better spacing */
-      position: relative; /* Add position relative for the close icon */
-    }
-
-    .close-icon {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      color: #4CAF50; /* Green color */
-      font-size: 24px;
+      margin: 20px;
     }
 
     button {
-      background-color: #000; /* Black background */
-      color: #4CAF50; /* Green text color */
-      padding: 10px 0; /* Adjusted padding for the buttons */
-      border: 2px solid #4CAF50; /* Green border */
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      padding: 10px 0;
+      border: 2px solid var(--button-text);
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 10px; /* Add margin to the buttons */
+      margin-top: 10px;
       font-weight: bold;
-      width: 100%; /* Make the buttons 100% width */
-      box-sizing: border-box; /* Ensure padding is included in the width */
+      width: 100%;
+      box-sizing: border-box;
     }
 
     button:hover {
-      background-color: #000; /* No highlighting effect on hover */
-      color: #4CAF50; /* Green text color on hover */
+      background-color: var(--button-bg);
+      color: var(--button-text);
     }
 
     input {
       padding: 8px;
       margin: 5px;
-      width: calc(100% - 16px); /* Make input width 100% for better responsiveness */
+      width: calc(100% - 16px);
       box-sizing: border-box;
-      border: 2px solid #4CAF50; /* Green border color for individual input fields */
-      border-radius: 4px; /* Border radius for better appearance */
-      background-color: #000; /* Black background */
-      color: #fff; /* White text color */
+      border: 2px solid var(--input-border);
+      border-radius: 4px;
+      background-color: var(--background-color);
+      color: var(--text-color);
     }
 
     .password-container {
       position: relative;
-      margin-top: 10px; /* Add margin to the password container */
+      margin-top: 10px;
     }
 
     .password-icon {
@@ -113,85 +89,85 @@
     #login-container img {
       max-width: 100%;
       height: auto;
-      margin-bottom: 20px; /* Add margin to the logo */
+      margin-bottom: 20px;
     }
 
     @media screen and (max-width: 600px) {
-      body {
-        background: #000; /* Set background color to black */
-      }
-
-      #login-container,
-      #modal-container,
-      #modal-content {
-        width: 90%; /* Adjusted width for better responsiveness on small screens */
+      #login-container {
+        width: 90%;
       }
     }
 
     p.credits {
       text-align: center;
-      margin-top: 30px; /* Reduce margin at the top */
-      font-size: 13px; /* Make the font size smaller */
+      margin-top: 30px;
+      font-size: 13px;
     }
 
     p.credits span.sthip {
-      color: #4CAF50; /* Green color for "The Sthip Oficial" */
+      color: var(--button-text);
       font-weight: bold;
     }
 
-    #welcome-message {
-      display: none; /* Hidden by default */
-      margin-top: 20px;
+    #toast {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--toast-bg);
+      color: var(--toast-text);
+      padding: 20px;
+      border-radius: 4px;
+      box-shadow: 0 0 10px var(--shadow-color);
+      z-index: 1000;
+      font-size: 18px;
     }
   </style>
 </head>
 <body>
 
 <div id="login-container">
-  <img src="icon/logolog.png" alt="Logo">
+  <img src="icon/logolog.png" alt="Logo de la aplicación">
   <form id="login-form">
     <label for="email">Correo Electrónico:</label>
     <input type="email" id="email" required>
     <br>
     <label for="password">Contraseña:</label>
     <div class="password-container">
-      <input type="password" id="password" required>
-      <i class="material-icons password-icon" onclick="togglePasswordVisibility()">visibility</i>
+      <input type="password" id="password" required aria-label="Contraseña">
+      <i class="material-icons password-icon" onclick="togglePasswordVisibility()" aria-label="Mostrar/ocultar contraseña">visibility</i>
     </div>
     <br>
     <button type="button" onclick="login()">Iniciar Sesión</button>
     <br>
     <button type="button" onclick="showRequestAccount()">Solicitar Cuenta</button>
   </form>
-  <p id="welcome-message">¡Bienvenido de nuevo!</p>
   <p class="credits">Desarrollado Por <a href="" target="_blank" style="text-decoration: none;"><span class="sthip">The Sthip Oficial</span></a></p>
 </div>
 
-<div id="modal-container">
-  <div id="modal-content">
-    <i class="material-icons close-icon" onclick="closeModal()">close</i>
-    <h2>Renovar Suscripción</h2>
-    <p>Tu suscripción ha expirado. Renueva tu suscripción para seguir utilizando la aplicación.</p>
-    <button onclick="redirectToRenewalPage()">Renovar Suscripción</button>
-  </div>
-</div>
+<!-- Toast de Bienvenida -->
+<div id="toast">¡Has iniciado sesión con éxito!</div>
+
+<!-- Elemento de Audio -->
+<audio id="welcome-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
 
 <script>
   const users = [
     {
-      "email": "jcpc",
-      "password": "jcpc2020",
-      "subscriptionDate": null
+      email: "jcpc",
+      password: "jcpc2020",
+      subscriptionDate: null
     },
     {
-      "email": "cristoferko",
-      "password": "Joen2024",
-      "subscriptionDate": null
+      email: "cristoferko",
+      password: "Joen2024",
+      subscriptionDate: null
     },
     {
-      "email": "oscarguz",
-      "password": "guzman2020",
-      "subscriptionDate": null
+      email: "oscarguz",
+      password: "guzman2020",
+      subscriptionDate: null
     }
   ];
 
@@ -204,8 +180,7 @@
 
   function showRenewalModal() {
     localStorage.removeItem('user_email');
-    const modalContainer = document.getElementById('modal-container');
-    modalContainer.style.display = 'flex';
+    document.getElementById('modal-container').style.display = 'flex';
   }
 
   function closeModal() {
@@ -230,7 +205,8 @@
       if (isSubscriptionExpired(user.subscriptionDate)) {
         showRenewalModal();
       } else {
-        document.getElementById('welcome-message').style.display = 'block'; // Show welcome message
+        playWelcomeSound(); // Play sound
+        showToast("¡Has iniciado sesión con éxito!"); // Show toast
         setTimeout(() => {
           window.location.href = 'store.html';
         }, 2000); // Wait 2 seconds before redirecting
@@ -249,6 +225,25 @@
     window.location.href = renewalPageURL;
   }
 
+  function togglePasswordVisibility() {
+    var passwordInput = document.getElementById('password');
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+  }
+
+  function playWelcomeSound() {
+    var audio = document.getElementById('welcome-sound');
+    audio.play();
+  }
+
+  function showToast(message) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 3000); // Hide the toast after 3 seconds
+  }
+
   window.onload = function () {
     const emailLocalStorage = localStorage.getItem('user_email');
     const user = users.find(u => u.email === emailLocalStorage);
@@ -257,17 +252,13 @@
       if (isSubscriptionExpired(user.subscriptionDate)) {
         showRenewalModal();
       } else {
-        document.getElementById('welcome-message').style.display = 'block'; // Show welcome message
+        playWelcomeSound(); // Play sound
+        showToast("¡Has iniciado sesión con éxito!"); // Show toast
         setTimeout(() => {
           window.location.href = 'store.html';
         }, 2000); // Wait 2 seconds before redirecting
       }
     }
-  }
-
-  function togglePasswordVisibility() {
-    var passwordInput = document.getElementById('password');
-    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
   }
 </script>
 
