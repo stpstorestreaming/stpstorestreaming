@@ -1,1 +1,276 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplicación Web</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Play&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Play', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #000; /* Set background color to black */
+      color: #fff;
+    }
+
+    #login-container,
+    #modal-container {
+      text-align: center;
+      background-color: black;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 100%; /* Make the form occupy the entire width */
+      margin: 20px; /* Add some margin for better spacing */
+    }
+
+    #modal-container {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #modal-content {
+      text-align: center;
+      background-color: black;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 100%; /* Make the form occupy the entire width */
+      margin: 20px; /* Add some margin for better spacing */
+      position: relative; /* Add position relative for the close icon */
+    }
+
+    .close-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      color: #4CAF50; /* Green color */
+      font-size: 24px;
+    }
+
+    button {
+      background-color: #000; /* Black background */
+      color: #4CAF50; /* Green text color */
+      padding: 10px 0; /* Adjusted padding for the buttons */
+      border: 2px solid #4CAF50; /* Green border */
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px; /* Add margin to the buttons */
+      font-weight: bold;
+      width: 100%; /* Make the buttons 100% width */
+      box-sizing: border-box; /* Ensure padding is included in the width */
+    }
+
+    button:hover {
+      background-color: #000; /* No highlighting effect on hover */
+      color: #4CAF50; /* Green text color on hover */
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px;
+      width: calc(100% - 16px); /* Make input width 100% for better responsiveness */
+      box-sizing: border-box;
+      border: 2px solid #4CAF50; /* Green border color for individual input fields */
+      border-radius: 4px; /* Border radius for better appearance */
+      background-color: #000; /* Black background */
+      color: #fff; /* White text color */
+    }
+
+    .password-container {
+      position: relative;
+      margin-top: 10px; /* Add margin to the password container */
+    }
+
+    .password-icon {
+      position: absolute;
+      top: 43px;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    #login-container img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px; /* Add margin to the logo */
+    }
+
+    @media screen and (max-width: 600px) {
+      body {
+        background: #000; /* Set background color to black */
+      }
+
+      #login-container,
+      #modal-container,
+      #modal-content {
+        width: 90%; /* Adjusted width for better responsiveness on small screens */
+      }
+    }
+
+    p.credits {
+      text-align: center;
+      margin-top: 30px; /* Reduce margin at the top */
+      font-size: 13px; /* Make the font size smaller */
+    }
+
+    p.credits span.sthip {
+      color: #4CAF50; /* Green color for "The Sthip Oficial" */
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-container">
+  <img src="icon/logolog.png" alt="Logo">
+  <form id="login-form">
+    <label for="email">Correo Electrónico:</label>
+    <input type="email" id="email" required>
+    <br>
+    <label for="password" class="password-container">
+      Contraseña:
+      <input type="password" id="password" required>
+      <i class="material-icons password-icon" onclick="togglePasswordVisibility()">visibility</i>
+    </label>
+    <br>
+    <button type="button" onclick="login()">Iniciar Sesión</button>
+    <br>
+    <button type="button" onclick="showRequestAccount()">Solicitar Cuenta</button>
+  </form>
+  <p class="credits">Desarrollado Por <a href="" target="_blank" style="text-decoration: none;"><span class="sthip">The sthip Oficial</span></a></p>
+</div>
+
+<div id="modal-container">
+  <div id="modal-content">
+    <i class="material-icons close-icon" onclick="closeModal()">close</i>
+    <h2>Renovar Suscripción</h2>
+    <p>Tu suscripción ha expirado. Renueva tu suscripción para seguir utilizando la aplicación.</p>
+    <button onclick="redirectToRenewalPage()">Renovar Suscripción</button>
+  </div>
+</div>
+
+<script>
+
+  [
+  {
+    "email": "jcpc",
+    "password": "jcpc2020",
+    "subscriptionDate": null
+  },
+  {
+    "email": "cristoferko",
+    "password": "Joen2024",
+    "subscriptionDate": null
+  },
+  {
+    "email": "oscarguz",
+    "password": "guzman2020",
+    "subscriptionDate": null
+  }
+];
+
+  function isSubscriptionExpired(subscriptionDate) {
+    if (!subscriptionDate) return false;
+    const currentDate = new Date();
+    const expirationDate = new Date(subscriptionDate);
+    return currentDate > expirationDate;
+  }
+
+  function showRenewalModal() {
+    localStorage.removeItem('user_email');
+    const modalContainer = document.getElementById('modal-container');
+    modalContainer.style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-container').style.display = 'none';
+  }
+
+  function renewSubscription() {
+    localStorage.removeItem('user_email');
+    alert('Renovación de suscripción realizada con éxito.');
+    document.getElementById('modal-container').style.display = 'none';
+  }
+
+  function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      if (!localStorage.getItem('user_email')) {
+        localStorage.setItem('user_email', email);
+      }
+
+      if (isSubscriptionExpired(user.subscriptionDate)) {
+        showRenewalModal();
+      } else {
+        window.location.href = '';
+      }
+    } else {
+      alert('Credenciales incorrectas');
+    }
+  }
+
+  function showRequestAccount() {
+    window.location.href = '';
+  }
+
+  function redirectToRenewalPage() {
+    // Modifica la siguiente URL con la que desees redirigir a los usuarios al renovar la suscripción
+    const renewalPageURL = '';
+    window.location.href = renewalPageURL;
+  }
+
+  window.onload = function () {
+    const emailLocalStorage = localStorage.getItem('user_email');
+    const user = users.find(u => u.email === emailLocalStorage);
+
+    if (user) {
+      if (isSubscriptionExpired(user.subscriptionDate)) {
+        showRenewalModal();
+      } else {
+        window.location.href = '';
+      }
+    }
+  }
+
+  function togglePasswordVisibility() {
+    var passwordInput = document.getElementById('password');
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+  }
+
+  function redirectToSthipWebsite() {
+    window.location.href = '';
+  }
+</script>
+
+</body>
+</html>
+
+
+
+
