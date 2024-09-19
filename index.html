@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Oscura con Header Fijo</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Estilos generales */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow: hidden; /* Oculta el contenido mientras carga el preloader */
+    }
+
+    /* Preloader */
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .preloader img {
+      width: 150px;
+      height: auto;
+    }
+
+    .preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Header fijo */
+    header {
+      background-color: #111;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 2px solid #444;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      width: 200px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      padding: 10px 20px;
+      border: 2px solid #fff;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #fff;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    .login-button {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      text-decoration: none;
+      border: 2px solid #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-button:hover {
+      background-color: #444;
+    }
+
+    .login-button i {
+      margin-right: 8px;
+    }
+
+    .content {
+      padding-top: 80px;
+    }
+
+    /* Slider */
+    .slider {
+      width: 90%;
+      max-width: 1200px;
+      margin: 50px auto;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #444;
+      border-radius: 10px;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+    }
+
+    .slide img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 24px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      z-index: 1;
+      transition: background-color 0.3s ease;
+    }
+
+    .next {
+      right: 10px;
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Menú Flexbox con imágenes */
+    .menu {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin: 50px auto;
+      max-width: 1000px;
+    }
+
+    .menu-item {
+      text-align: center;
+      margin: 15px;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .menu-item:hover {
+      background-color: #222;
+      transform: scale(1.05);
+    }
+
+    .menu-item h3 {
+      margin: 10px 0;
+      padding: 10px;
+      color: #fff;
+    }
+
+    .menu-title {
+      text-align: center;
+      font-size: 28px;
+      margin: 50px 0;
+      color: #fff;
+      border-bottom: 2px solid #444;
+      padding-bottom: 10px;
+    }
+
+    /* Footer fijo */
+    footer {
+      background-color: #111;
+      text-align: center;
+      padding: 20px;
+      border-top: 2px solid #444;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    .footer-space {
+      padding-bottom: 80px;
+    }
+
+    /* Estilos del modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      transition: opacity 0.5s ease;
+    }
+
+    .modal-content {
+      background-color: #000;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #fff;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+    }
+
+    .modal-content .btn-contact {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      color: #fff;
+      background-color: #25D366;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .modal-content .btn-contact:hover {
+      background-color: #1da851;
+    }
+
+    .close {
+      color: #fff;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #f1f1f1;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+      .logo {
+        width: 300px;
+      }
+
+      nav a {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      .slider {
+        width: 95%;
+        margin: 30px auto;
+      }
+
+      .prev, .next {
+        padding: 12px;
+        font-size: 20px;
+      }
+
+      .menu-item img {
+        height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <img src="icon/logolog.png" alt="Logo">
+  </div>
+
+  <!-- Header fijo -->
+  <header>
+    <a href="index.html">
+      <img src="icon/logolog.png" alt="Logo" class="logo">
+    </a>
+    <a id="auth-button" href="login.html" class="login-button">
+        <i class="material-icons" id="auth-icon">login</i> 
+        <span id="auth-text">Iniciar sesión</span>
+      </a>
+      
+  </header>
+
+  <!-- Contenido principal -->
+  <div class="content footer-space">
+    <!-- Slider -->
+    <div class="slider">
+      <div class="slides">
+        <div class="slide">
+          <img src="serv/banner/1.png" alt="Slide 1">
+        </div>
+        <div class="slide">
+          <img src="serv/banner/2.png" alt="Slide 2">
+        </div>
+        <div class="slide">
+          <img src="serv/banner/3.png" alt="Slide 3">
+        </div>
+      </div>
+      <a class="prev" onclick="moveSlides(-1)">&#10094;</a>
+      <a class="next" onclick="moveSlides(1)">&#10095;</a>
+    </div>
+
+    <!-- Menú con imágenes -->
+     <!-- Menú Flexbox con imágenes -->
+     <div class="menu-title">Servicios Disponibles</div>
+     <div class="menu">
+        <div class="menu-item">
+          <img src="serv/servicios/1.png" alt="Opción 1">
+          <h3>Prime Video</h3>
+        </div>
+        <div class="menu-item">
+          <img src="serv/servicios/2.png" alt="Opción 2">
+          <h3>Hbo max</h3>
+        </div>
+        <div class="menu-item">
+          <img src="serv/servicios/3.png" alt="Opción 3">
+          <h3>Netflix</h3>
+        </div>
+        <div class="menu-item">
+          <img src="serv/servicios/6.png" alt="Opción 4">
+          <h3>Spotify</h3>
+        </div>
+        <div class="menu-item">
+          <img src="serv/servicios/5.png" alt="Opción 5">
+          <h3>Canva Pro</h3>
+        </div>
+        <div class="menu-item">
+          <img src="serv/servicios/4.png" alt="Opción 6">
+          <h3>Disney+</h3>
+        </div>
+    <div class="menu-item">
+      <img src="serv/servicios/7.png" alt="Opción 6">
+      <h3>Plex</h3>
+      </div>
+      <div class="menu-item">
+        <img src="serv/servicios/8.png" alt="Opción 6">
+        <h3>Vix</h3>
+      
+    </div>
+      <!-- Añade más elementos aquí -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Desarrollado por TheShtip Oficial</p>
+  </footer>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>¡Contáctanos!</h2>
+      <a href="https://wa.me/1234567890" class="btn-contact">WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Preloader
+    window.addEventListener('load', function() {
+      document.getElementById('preloader').classList.add('hidden');
+      document.body.style.overflow = 'auto'; // Mostrar el contenido una vez cargado
+    });
+
+    // Slider
+    let slideIndex = 0;
+    showSlides();
+
+    function showSlides() {
+      let i;
+      const slides = document.querySelectorAll('.slide');
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 2000); // Cambiar de slide cada 2 segundos
+    }
+
+    function moveSlides(n) {
+      showSlides(slideIndex += n);
+    }
+
+    // Modal
+    const modal = document.getElementById("myModal");
+    const btn = document.getElementById("contacto");
+    const span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+// Obtener el correo electrónico del almacenamiento local
+const userEmail = localStorage.getItem('user_email');
+
+// Obtener referencias a los elementos del botón de autenticación
+const authButton = document.getElementById('auth-button');
+const authIcon = document.getElementById('auth-icon');
+const authText = document.getElementById('auth-text');
+
+// Verificar el valor de userEmail y depurar
+console.log('Valor de user_email:', userEmail);
+
+// Verificar si userEmail está presente y no está vacío
+if (userEmail && userEmail.trim() !== '') {
+  // Si userEmail está presente y no está vacío, actualizar el botón para mostrar el panel
+  authButton.href = 'dashboard.html'; // Cambia el enlace a tu panel de usuario
+  authIcon.className = 'fas fa-tachometer-alt'; // Cambia el icono a uno adecuado para el panel (Font Awesome ejemplo)
+  authText.textContent = 'Panel'; // Cambia el texto del botón
+} else {
+  // Si userEmail no está presente o está vacío, configurar el botón para la autenticación
+  authButton.href = 'login.html'; // Cambia el enlace al formulario de inicio de sesión
+  authIcon.className = 'fas fa-sign-in-alt'; // Cambia el icono a uno adecuado para el inicio de sesión (Font Awesome ejemplo)
+  authText.textContent = 'Iniciar sesión'; // Cambia el texto del botón
+
+  // Para propósitos de prueba, puedes establecer un valor en el Local Storage
+  // Esto debería ser eliminado en producción
+  localStorage.setItem('user_email', ''); // O puedes usar un valor de prueba si es necesario
+}
+
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>

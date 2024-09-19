@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STPSTORE</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+      :root {
+    --bg-color: #000;
+    --text-color: #fff;
+    --button-bg-color: #fff;
+    --button-hover-color: #ddd;
+    --modal-bg-color: rgba(0, 0, 0, 0.9);
+    --modal-content-bg: rgba(0, 0, 0, 0.8);
+    --input-bg-color: #222;
+    --border-color: #fff;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.header .logo {
+    width: 200px;
+}
+
+.header .user-info {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.header .user-info .material-icons {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.header .user-info span {
+    margin-right: 15px;
+}
+
+.header .logout-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.logout-button {
+    background-color: var(--button-bg-color);
+    border: none;
+    color: #000;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.logout-button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 100px 20px 20px;
+    max-width: 1000px;
+    margin: auto;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.image-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    flex: 1 1 150px; /* Ajusta el tamaño mínimo y el crecimiento del ítem */
+    max-width: 240px; /* Limita el tamaño máximo del ítem */
+}
+
+.image-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.image-item img:hover {
+    transform: scale(1.05);
+}
+
+.modal,
+.report-fault-modal,
+.confirmation-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--modal-bg-color);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content,
+.report-fault-content,
+.confirmation-content {
+    background-color: var(--modal-content-bg);
+    margin: 100px auto 5%;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close,
+.close-modal {
+    color: var(--text-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus,
+.close-modal:hover {
+    color: #fff;
+}
+
+.modal-field,
+.report-fault-content textarea {
+    margin-bottom: 20px;
+}
+
+.modal-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-field input,
+.modal-field textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--input-bg-color);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.modal-field textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.copy-button,
+.report-button {
+    background-color: var(--button-bg-color);
+    border: none;
+    color: #000;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.report-button:hover {
+    background-color: var(--button-hover-color);
+    transition: background-color 0.3s ease;
+}
+
+.report-fault-content textarea {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+}
+
+.report-fault-content button,
+.confirmation-content button {
+    background-color: var(--button-bg-color);
+    border: none;
+    color: #000;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.report-fault-content button:hover,
+.confirmation-content button:hover {
+    background-color: var(--button-hover-color);
+    transform: scale(1.05);
+}
+
+.floating-menu {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+}
+
+.floating-menu .menu-button {
+    background-color: var(--button-bg-color);
+    border: none;
+    color: #000;
+    padding: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-menu .menu-button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.floating-menu .dropdown {
+    display: none;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.floating-menu .dropdown a {
+    color: var(--text-color);
+    padding: 10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.floating-menu .dropdown a:hover {
+    background-color: var(--button-hover-color);
+}
+
+.floating-menu .dropdown a .material-icons {
+    margin-right: 10px;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="icon/logolog.png" alt="Logo" class="logo">
+        
+        <div class="user-info">
+            <span id="username-display">Usuario no encontrado</span>
+            <button id="logoutButton" class="logout-button">
+                <span class="material-icons">logout</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="galleryContainer"></div>
+<!-- Modal de Detalles -->
+<div id="modal" class="modal">
+    <div class="modal-content report-fault-content">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <h2 id="modalTitle">Datos Cuenta/Pantalla</h2>
+        <div class="modal-field">
+            <label for="email">Correo:</label>
+            <input type="text" id="email" readonly>
+            <button class="copy-button" id="copyEmailButton">Copiar Correo</button>
+        </div>
+        <div class="modal-field">
+            <label for="clabe">Clave:</label>
+            <input type="text" id="clabe" readonly>
+            <button class="copy-button" id="copyClabeButton">Copiar Clave</button>
+        </div>
+        <div class="modal-field">
+            <label for="pin">PIN:</label>
+            <input type="text" id="pin" readonly>
+            <button class="copy-button" id="copyPinButton">Copiar PIN</button>
+        </div>
+        <div class="modal-field">
+            <label for="profile">Perfil:</label>
+            <input type="text" id="profile" readonly>
+   
+        </div>
+        <div class="modal-field">
+            <label for="serviceType">Tipo de Servicio:</label>
+            <span id="serviceType"></span>
+        </div>
+        <div class="modal-field">
+            <label for="renewalDate">Fecha de Renovación:</label>
+            <span id="renewalDate"></span>
+        </div>
+        <button class="report-button" id="reportIssueButton">Reportar Fallo</button>
+        <button class="report-fault-content-button" id="renewAccountButton">Renovar Cuenta</button>
+    </div>
+</div>
+
+
+
+<!-- Ventana Modal para Reportar Fallo -->
+<div id="reportFaultModal" class="report-fault-modal" role="dialog" aria-labelledby="reportFaultTitle" aria-hidden="true">
+    <div class="report-fault-content">
+        <button id="closeModalButton" class="close-modal" aria-label="Cerrar Modal">&times;</button>
+        <h2 id="reportFaultTitle">Describa el Fallo</h2>
+        <textarea id="issueDescription" placeholder="Describe el problema aquí..." required></textarea>
+        <button id="sendReportButton" aria-label="Enviar Reporte">Enviar Reporte</button>
+    </div>
+</div>
+
+    <!-- Modal de Confirmación para Cerrar Sesión -->
+    <div id="confirmationModal" class="confirmation-modal" aria-labelledby="confirmationTitle" aria-hidden="true">
+        <div class="confirmation-content">
+            <h2 id="confirmationTitle">¿Estás seguro de que deseas cerrar sesión?</h2>
+            <button id="confirmExitButton">Sí</button>
+            <button id="cancelExitButton">No</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = [
+                { username: 'cristoferko', email: 'yiseh37568@asaud.com', clabe: 'asd', pin: '1234', profile: 'Perfil A', serviceType: 'Pantalla', renewalDate: '2024-10-28', src: 'https://logo.clearbit.com/disneyplus.com' },
+                { username: 'cristoferko', email: 'yiseh37568@asaud.com', clabe: 'asd', pin: '1234', profile: 'Perfil A', serviceType: 'Pantalla', renewalDate: '2024-10-28', src: 'https://logo.clearbit.com/disneyplus.com' },
+                { username: 'cristoferko', email: 'yiseh37568@asaud.com', clabe: 'asd', pin: '5678', profile: 'Perfil B', serviceType: 'Cuenta', renewalDate: '2024-10-28', src: 'https://fullstreaming.co/wp-content/uploads/2022/11/Prime-Video.png' },
+                { username: 'cristoferko', email: 'yiseh37568@asaud.com', clabe: 'asd', pin: '5678', profile: 'Perfil B', serviceType: 'Cuenta', renewalDate: '2024-10-28', src: 'https://fullstreaming.co/wp-content/uploads/2022/11/Prime-Video.png' },
+            ];
+    
+            const modal = document.getElementById('modal');
+            const emailInput = document.getElementById('email');
+            const clabeInput = document.getElementById('clabe');
+            const pinInput = document.getElementById('pin');
+            const profileInput = document.getElementById('profile');
+            const serviceTypeSpan = document.getElementById('serviceType');
+            const renewalDateSpan = document.getElementById('renewalDate');
+            const issueDescriptionTextarea = document.getElementById('issueDescription');
+            const closeButton = document.querySelector('.close');
+            const copyEmailButton = document.getElementById('copyEmailButton');
+            const copyClabeButton = document.getElementById('copyClabeButton');
+            const copyPinButton = document.getElementById('copyPinButton');
+            const reportIssueButton = document.getElementById('reportIssueButton');
+            const sendReportButton = document.getElementById('sendReportButton');
+            const logoutButton = document.getElementById('logoutButton');
+            const usernameDisplay = document.getElementById('username-display');
+            const galleryContainer = document.getElementById('galleryContainer');
+            const floatingButton = document.querySelector('.menu-button');
+            const floatingMenu = document.querySelector('.dropdown');
+    
+            const reportFaultModal = document.getElementById('reportFaultModal');
+            const closeReportFaultModalButton = document.getElementById('closeModalButton');
+            const confirmationModal = document.getElementById('confirmationModal');
+            const confirmationTitle = document.getElementById('confirmationTitle');
+            const confirmExitButton = document.getElementById('confirmExitButton');
+            const cancelExitButton = document.getElementById('cancelExitButton');
+    
+            function updateUsername() {
+                const userEmail = localStorage.getItem('user_email');
+                if (userEmail) {
+                    const username = userEmail.split('@')[0];
+                    usernameDisplay.textContent = `Usuario: ${username}`;
+                    updateGallery(username);
+                } else {
+                    usernameDisplay.textContent = 'Usuario no encontrado';
+                }
+            }
+    
+            function updateGallery(username) {
+                galleryContainer.innerHTML = '';
+                const filteredImages = images.filter(image => image.username === username);
+                filteredImages.forEach(image => {
+                    const div = document.createElement('div');
+                    div.className = 'image-item';
+                    div.dataset.email = image.email;
+                    div.dataset.clabe = image.clabe;
+                    div.dataset.pin = image.pin;
+                    div.dataset.profile = image.profile;
+                    div.dataset.serviceType = image.serviceType;
+                    div.dataset.renewalDate = image.renewalDate;
+    
+                    const img = document.createElement('img');
+                    img.src = image.src;
+                    img.alt = `Imagen de ${image.username}`;
+    
+                    div.appendChild(img);
+                    galleryContainer.appendChild(div);
+                });
+            }
+    
+            galleryContainer.addEventListener('click', (event) => {
+                const target = event.target;
+                if (target.tagName === 'IMG') {
+                    const parent = target.parentElement;
+                    const email = parent.dataset.email;
+                    const clabe = parent.dataset.clabe;
+                    const pin = parent.dataset.pin;
+                    const profile = parent.dataset.profile;
+                    const serviceType = parent.dataset.serviceType;
+                    const renewalDate = parent.dataset.renewalDate;
+    
+                    emailInput.value = email;
+                    clabeInput.value = clabe;
+                    pinInput.value = pin;
+                    profileInput.value = profile;
+                    serviceTypeSpan.textContent = serviceType;
+                    renewalDateSpan.textContent = renewalDate;
+    
+                    if (serviceType === 'Pantalla') {
+                        pinInput.style.display = 'block';
+                        profileInput.style.display = 'block';
+                        copyPinButton.style.display = 'inline';
+                    } else {
+                        pinInput.style.display = 'none';
+                        profileInput.style.display = 'none';
+                        copyPinButton.style.display = 'none';
+                    }
+    
+                    modal.style.display = 'block';
+                }
+            });
+    
+            closeButton.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+    
+            copyEmailButton.addEventListener('click', () => {
+                emailInput.select();
+                document.execCommand('copy');
+                alert('Correo copiado al portapapeles');
+            });
+    
+            copyClabeButton.addEventListener('click', () => {
+                clabeInput.select();
+                document.execCommand('copy');
+                alert('Clave copiada al portapapeles');
+            });
+    
+            copyPinButton.addEventListener('click', () => {
+                pinInput.select();
+                document.execCommand('copy');
+                alert('PIN copiado al portapapeles');
+            });
+    
+       
+    
+            var renewAccountButton = document.getElementById("renewAccountButton");
+    
+            renewAccountButton.addEventListener('click', () => {
+                const email = emailInput.value;
+                const clabe = clabeInput.value;
+                const pin = pinInput.value;
+                const profile = profileInput.value;
+                const serviceType = serviceTypeSpan.textContent;
+                const renewalDate = renewalDateSpan.textContent;
+    
+                const message = `Solicitud de Renovación de Cuenta:\nCorreo: ${email}\nCLABE: ${clabe}\nPIN: ${pin}\nPerfil: ${profile}\nTipo de Servicio: ${serviceType}\nFecha de Renovación: ${renewalDate}\n\nPor favor, procedan con la renovación.`;
+    
+                const apiUrl = 'https://api.whatsapp.com/send';
+                const phoneNumber = '1234567890'; // Número de teléfono destino
+                const url = `${apiUrl}?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    
+                window.open(url, '_blank');
+            });
+    
+            reportIssueButton.addEventListener('click', () => {
+                reportFaultModal.style.display = 'flex';
+            });
+    
+            closeReportFaultModalButton.addEventListener('click', () => {
+                reportFaultModal.style.display = 'none';
+            });
+    
+            sendReportButton.addEventListener('click', () => {
+                const userEmail = localStorage.getItem('user_email');
+                if (userEmail) {
+                    const username = userEmail.split('@')[0];
+                    const serviceType = serviceTypeSpan.textContent;
+                    const issueDescription = issueDescriptionTextarea.value.trim();
+                    const message = `Reporte de Fallo en la Aplicación:\nUsuario: ${username}\nCorreo: ${userEmail}\nCLABE: ${clabeInput.value}\nPIN: ${pinInput.value}\nPerfil: ${profileInput.value}\nTipo de Servicio: ${serviceType}\nDescripción del Fallo: ${issueDescription}`;
+    
+                    const apiUrl = 'https://api.whatsapp.com/send';
+                    const phoneNumber = '1234567890'; // Número de teléfono destino
+                    const url = `${apiUrl}?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+    
+                    window.open(url, '_blank');
+    
+                    reportFaultModal.style.display = 'none';
+                } else {
+                    alert('No se puede enviar el reporte. Usuario no encontrado.');
+                }
+            });
+    
+            logoutButton.addEventListener('click', () => {
+                confirmationModal.style.display = 'flex';
+            });
+    
+            confirmExitButton.addEventListener('click', () => {
+                confirmExit(true);
+            });
+    
+            cancelExitButton.addEventListener('click', () => {
+                confirmExit(false);
+            });
+    
+            function confirmExit(confirm) {
+                if (confirm) {
+                    localStorage.removeItem('user_email');
+                    window.location.href = 'login.html';
+                } else {
+                    confirmationModal.style.display = 'none';
+                }
+            }
+    
+            updateUsername();
+        });
+    </script>
+    
+</body>
+</html>
